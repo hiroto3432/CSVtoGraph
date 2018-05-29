@@ -2,11 +2,15 @@ import com.opencsv.CSVReader;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import processing.core.PApplet;
 
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.List;
 
 
 public class CSVtoGraph{
@@ -18,20 +22,30 @@ public class CSVtoGraph{
 
     public static void main(String[] args) throws IOException{
 
-        ReadRecords();
+        ReadRecords("src/smp.csv");
         ReadFills();
-        System.out.println(maxValue);
 
 
         PApplet.main("GUIbyP5");
+
+        Font font = new Font("MS gothic",Font.PLAIN,24);
+        FontUIResource fontUIResources = new FontUIResource(font);
+        for(Map.Entry<?,?> entry: UIManager.getDefaults().entrySet()){
+            if(entry.getKey().toString().toLowerCase().endsWith("font")) {
+                UIManager.put(entry.getKey(), fontUIResources);
+            }
+        }
+
+        DispMenu.main( null);
+
     }
 
 
 
 
-    private static void ReadRecords() throws IOException{
+    protected static void ReadRecords(String fileName) throws IOException{
 
-        List<String []> recordsList = FileRead("src/smp.csv","SJIS");
+        List<String []> recordsList = FileRead(fileName,"SJIS");
 
         int cnt = 0;
 
@@ -127,4 +141,14 @@ public class CSVtoGraph{
         }
     }
 
+}
+
+interface ColorDatas{
+    Colors BLACK = new Colors(0,0,0);
+    Colors WHITE = new Colors(255,255,255);
+    Colors LIGHTBLUE = new Colors(0,255,255);
+
+    void background(Colors c);
+    void fill(Colors c);
+    void stroke(Colors c);
 }
