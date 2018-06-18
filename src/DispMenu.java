@@ -95,6 +95,7 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
 
     public static int mode = 1;
     protected static int page = 1;
+    protected static int epage = 0;
     protected static final int DATA_COUNT = CSVtoGraph.records.get(0).record.length;
     private static final int MAX_DIGIT = String.valueOf(CSVtoGraph.records.size()-1).length();
     private static JButton b_file;
@@ -103,6 +104,11 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
     protected static JTextField t1_diff,t2_diff;
     private static JRadioButton r_page;
     private static JRadioButton r_diff;
+    private static JButton b_left,b_right;
+    private static JButton b_add,b_remove,b_issue;
+    private static JTextField t_epage;
+    private static JRadioButton r_epage;
+    protected static JLabel l_epage_max;
 
     public static void main(String[] args) {
         t_page = new JTextField(MAX_DIGIT);
@@ -110,7 +116,14 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
         r_page = new JRadioButton();
         r_diff = new JRadioButton();
         b_file = new JButton();
-
+        b_left = new JButton();
+        b_right = new JButton();
+        b_add = new JButton();
+        b_remove = new JButton();
+        b_issue = new JButton();
+        t_epage = new JTextField(MAX_DIGIT);
+        r_epage = new JRadioButton();
+        l_epage_max = new JLabel("/" + 0);
 
         DispMenu frame = new DispMenu("DispMenu");
         frame.setVisible(true);
@@ -119,21 +132,22 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
 
     DispMenu(String title){
 
+        final int rows = 5;
         setTitle(title);
         setSize(500,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3,1));
+        setLayout(new GridLayout(rows,1));
 
-        JPanel panel[] = new JPanel[3];
+        JPanel panel[] = new JPanel[rows];
         for(int p=0;p<panel.length;p++){
             panel[p] = new JPanel();
         }
 
 
-        b_file.setText("ファイルを選択");
+        b_file.setText("file selection");
         b_file.addActionListener(this);
 
-        panel[0].setLayout(new FlowLayout());
+        panel[0].setLayout(new FlowLayout(FlowLayout.CENTER));
         panel[0].add(b_file);
 
         r_page.setSelected(true);
@@ -146,7 +160,7 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
 
         JLabel l_page_max = new JLabel("/" + String.valueOf(CSVtoGraph.records.size()-1));
 
-        panel[1].setLayout(new FlowLayout());
+        panel[1].setLayout(new FlowLayout(FlowLayout.CENTER));
         panel[1].add(r_page);
         panel[1].add(l_page);
         panel[1].add(t_page);
@@ -164,7 +178,7 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
         t2_diff.setHorizontalAlignment(JTextField.RIGHT);
         t2_diff.addActionListener(this);
 
-        panel[2].setLayout(new FlowLayout());
+        panel[2].setLayout(new FlowLayout(FlowLayout.CENTER));
         panel[2].add(r_diff);
         panel[2].add(l_diff);
         panel[2].add(t1_diff);
@@ -173,7 +187,42 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
 
         bg.add(r_page);
         bg.add(r_diff);
+        bg.add(r_epage);
 
+        r_page.addChangeListener(this);
+
+        JLabel l_epage = new JLabel("extraction:");
+
+        b_left.addActionListener(this);
+        b_left.setText("-");
+        b_right.addActionListener(this);
+        b_right.setText("+");
+
+        b_add.addActionListener(this);
+        b_add.setText("add");
+        b_remove.addActionListener(this);
+        b_remove.setText("remove");
+        b_issue.addActionListener(this);
+        b_issue.setText("issue");
+
+        t_epage.addActionListener(this);
+        t_epage.setHorizontalAlignment(JTextField.RIGHT);
+        t_epage.setText(String.valueOf(epage));
+
+
+
+        panel[3].setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel[3].add(r_epage);
+        panel[3].add(l_epage);
+        panel[3].add(b_left);
+        panel[3].add(t_epage);
+        panel[3].add(l_epage_max);
+        panel[3].add(b_right);
+
+        panel[4].setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel[4].add(b_add);
+        panel[4].add(b_remove);
+        panel[4].add(b_issue);
 
 
         Container content = getContentPane();
@@ -189,6 +238,7 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
     }
 
     public void actionPerformed(ActionEvent event){
+
         if(event.getSource() == t_page){
             try {
                 int v = Integer.parseInt(t_page.getText());
@@ -219,6 +269,29 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
                 //エラー
             }
         }
+        if(event.getSource() == b_add){
+            if(mode == 1){
+                CSVtoGraph.exdatas.add(CSVtoGraph.records.get(page));
+            }
+            if(mode == 2){
+                CSVtoGraph.exdatas.add(GUIbyP5.dif_records);
+            }
+            l_epage_max.setText("/"+String.valueOf(CSVtoGraph.exdatas.size()));
+        }
+        if(event.getSource() == b_remove){
+            if(CSVtoGraph.exdatas.size() > 0){
+                CSVtoGraph.exdatas.remove(CSVtoGraph.exdatas.size()-1);
+            }
+            l_epage_max.setText("/"+String.valueOf(CSVtoGraph.exdatas.size()));
+        }
+        if(event.getSource() == b_issue){
+            if(CSVtoGraph.exdatas.size() > 0){
+
+                /* 卍卍卍　csv発行処理　卍卍卍 */
+
+
+            }
+        }
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -227,6 +300,8 @@ public class DispMenu extends JFrame implements ActionListener,ChangeListener{
         }else if(r_diff.isSelected()){
             mode = 2;
             GUIbyP5.createDiffData();
+        }else if(r_epage.isSelected()){
+
         }
     }
 

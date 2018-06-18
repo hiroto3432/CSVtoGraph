@@ -15,7 +15,7 @@ public class GUIbyP5 extends PApplet implements ColorDatas{
 
     private static final int WAVELENGTH_MIN = (int)CSVtoGraph.records.get(0).record[0];
 
-    private static Records dif_records;
+    protected static Records dif_records;
     private static int y_STAND_POS;
 
 

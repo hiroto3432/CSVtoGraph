@@ -19,6 +19,7 @@ public class CSVtoGraph{
     public static ArrayList<Records> records = new ArrayList<>();
     public static TreeMap<Integer,Colors> fills = new TreeMap<>();
     public static double maxValue;
+    public static ArrayList<Records> exdatas = new ArrayList<>();
 
     public static void main(String[] args) throws IOException{
 
